@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Guess the RGB Color</title>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        box-sizing: border-box;
+        font-family: Verdana, Geneva, sans-serif;
+      }
+      .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        height: 200px;
+        width: 100vw;
+        /* color:white; */
+        
+      }
+
+      h1,
+      h2,
+      h3,
+      #attempts {
+        text-align: center;
+        color: white;
+        text-shadow: 1px 1px 1px #111111a9, 1px -1px 1px #111111a9,
+          -1px 1px 1px #111111a9, -1px -1px 1px #111111a9;
+      }
+
+      button {
+        height: 50px;
+        width: 190px;
+        margin: 0 10px;
+        cursor: pointer;
+
+        outline: none;
+        background: #111;
+        border: 2px solid white;
+        border-radius: 25px;
+        color: white;
+        font-size: 22px;
+        text-transform: capitalize;
+      }
+      button:hover {
+        background: #333;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      #end-screen {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 2;
+        background: linear-gradient(to top right, salmon, lemonchiffon);
+      }
+
+      .wrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 700px;
+      }
+
+      #end-screen div button {
+        margin: 0 auto;
+        display: block;
+      }
+
+      .colorField {
+        border:none;
+        border-bottom: 3px solid #33303046;
+        width: 30%;
+        padding: 12px 50px; 
+        margin: 8px 1%;
+        display: inline-block;
+        /* border-radius: 4px; */
+        box-sizing: border-box;
+        /* border: 3px solid #000000; */
+        font-size: xx-large;
+        background-color: rgba(255,255,255,0);
+        text-align: center; 
+        color:white;
+        text-shadow: 1px 1px 1px #111111a9, 1px -1px 1px #111111a9,
+          -1px 1px 1px #111111a9, -1px -1px 1px #111111a9;
+        
+        
+      }
+
+
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>Guess the RGB</h1>
+      <h3 id="score">Score</h3>
+      <h4 id="attempts"></h4>
+      <div class="container">
+        <form>
+          
+          <input type="text" id = "R-field" class="colorField" pattern="^(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})$" value="0">
+          <input type="text" id = "G-field" class="colorField" pattern="^(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})$" value="0">
+          <input type="text" id = "B-field" class="colorField" pattern="^(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})$" value="0"> 
+
+        </form>
+      </div>
+    </div>
+    
+
+    <div id="end-screen" class="hidden">
+      <div class="wrapper">
+        <h1>Congratulations!</h1>
+        <h3 name="score"></h3>
+        <button onclick="reset()">Restart</button>
+      </div>
+    </div>
+
+    <script>
+      // const colors = {
+      //   reds: ["salmon", "indianred", "crimson", "firebrick", "red"],
+      //   oranges: ["coral", "tomato", "gold", "orange", "orangered"],
+      //   yellows: [
+      //     "lemonchiffon",
+      //     "papayawhip",
+      //     "moccasin",
+      //     "peachpuff",
+      //     "khaki",
+      //     "yellow"
+      //   ],
+      //   greens: [
+      //     "lawngreen",
+      //     "chartreuse",
+      //     "limegreen",
+      //     "lime",
+      //     "forestgreen",
+      //     "green",
+      //     "yellowgreen",
+      //     "greenyellow",
+      //     "springgreen",
+      //     "seagreen",
+      //     "olive"
+      //   ],
+      //   cyans: [
+      //     "cyan",
+      //     "aqua",
+      //     "aquamarine",
+      //     "paleturquoise",
+      //     "turquoise",
+      //     "lightseagreen",
+      //     "teal",
+      //     "cadetblue"
+      //   ],
+      //   blues: [
+      //     "powderblue",
+      //     "lightskyblue",
+      //     "deepskyblue",
+      //     "dodgerblue",
+      //     "cornflowerblue",
+      //     "steelblue",
+      //     "royalblue",
+      //     "blue",
+      //     "darkblue",
+      //     "navy",
+      //     "midnightblue",
+      //     "mediumslateblue",
+      //     "slateblue"
+      //   ],
+      //   purples: [
+      //     "lavender",
+      //     "thistle",
+      //     "plum",
+      //     "violet",
+      //     "orchid",
+      //     "fuchsia",
+      //     "magenta",
+      //     "blueviolet",
+      //     "purple",
+      //     "indigo"
+      //   ],
+      //   pinks: [
+      //     "pink",
+      //     "lightpink",
+      //     "hotpink",
+      //     "deeppink",
+      //     "palevioletred",
+      //     "mediumvioletred"
+      //   ]
+      // };
+      var body = document.getElementsByTagName("body")[0];
+      var scoreElem = document.getElementById("score");
+      var attemptsElem = document.getElementById("attempts");
+      var endScreen = document.getElementById("end-screen");
+      var textFields = document.getElementsByClassName("colorField");
+      var score = 0;
+      var attempts = 0;
+      var maxAttempts = 10;
+
+      Array.from(
+        document
+          .getElementsByClassName("colorField")
+      ).forEach(txtField => {
+        txtField.addEventListener("keydown", event => {
+          
+          //update score and do another round only if "Enter" is pressed & end Screen is not visible
+          if (event.keyCode === 13 && (endScreen.classList.contains("hidden"))){
+            
+            //Get User and Correct Answer
+            var enteredRGBAnswer = [
+              parseInt(document.getElementById('R-field').value),
+              parseInt(document.getElementById('G-field').value),
+              parseInt(document.getElementById('B-field').value)
+            ]
+            var correctAnswer = body.dataset["value"].split(',')
+
+            // Calculate Score
+            var scoreToAdd = 500 - (
+              Math.abs(enteredRGBAnswer[0] -correctAnswer[0]) +
+              Math.abs(enteredRGBAnswer[1] -correctAnswer[1]) +
+              Math.abs(enteredRGBAnswer[2] -correctAnswer[2])
+            );
+            score = score +  (scoreToAdd > 0 ? scoreToAdd : 0);
+
+            //End Round after maxAttempts
+            attempts++;
+            if (attempts >= maxAttempts) {
+              showEndScreen();
+            } else {
+              doRound();
+            }
+            textFields[0].value = "0";
+            textFields[1].value = "0";
+            textFields[2].value = "0";
+          }
+        });
+      });
+        
+      function reset() {
+        score = 0;
+        attempts = 0;
+        updateDisplays();
+        endScreen.classList.add("hidden");
+      }
+
+      function showEndScreen() {
+        endScreen.classList.remove("hidden");
+        endScreen.children.item(0).children.namedItem("score").innerHTML =
+          "You're score is " + score;
+      }
+
+      function updateDisplays() {
+        scoreElem.innerHTML = "Score: " + score;
+        attemptsElem.innerHTML = "Rounds Played: " + attempts + "/" + maxAttempts;
+      }
+
+      function randomNumberBetween(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function setRandomBackgroundColor() {
+        var randomR = randomNumberBetween(0, 255);
+        var randomG = randomNumberBetween(0, 255);
+        var randomB = randomNumberBetween(0, 255);
+
+        //Set Background Color
+        body.style.background = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
+
+        //Save Random color to body:color
+        body.dataset["value"] = [randomR, randomG, randomB];
+
+        //select R-color field
+        textFields[0].focus();
+
+        return [randomR, randomG, randomB];
+      }
+
+      function doRound() {
+        updateDisplays();
+        var [R_color, G_color, B_color] = setRandomBackgroundColor();
+
+      }
+
+      doRound();
+    </script>
+  </body>
+</html>
